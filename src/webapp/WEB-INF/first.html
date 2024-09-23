@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div class="container mt-5">
+    <h2 class="text-center">Coins List</h2>
+    <div id="coin-list" class="row"></div>
+    <div class="text-center">
+        <button id="load-more" class="btn btn-primary mt-3">Load More</button>
+    </div>
+</div>
+</body>
+<script>
+    let page = 1;
+
+    function loadCoins() {
+        fetch(`/coins/?page=${page}`)
+            .then(response => response.json())
+            .then(coins => {
+                const coinList = document.getElementById('coin-list');
+                coins.forEach(coin => {
+                    const coinCard = document.createElement('div');
+                    coinCard.className = 'col-md-4 mb-4';
+                    coinCard.innerHTML = `
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">${coin.name}</h5>
+                                <p class="card-text">Symbol: ${coin.symbol}</p>
+                                <a href="/coins/details/${coin.id}" class="btn btn-primary">View Details</a>
+                            </div>
+                        </div>
+                    `;
+                    coinList.appendChild(coinCard);
+                });
+            });
+    }
+
+    document.getElementById('load-more').addEventListener('click', () => {
+        page++;
+        loadCoins();
+    });
+
+    loadCoins(); // Initial load
+</script>
+</html>
